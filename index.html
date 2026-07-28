@@ -3,13 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>My Vibe App</title>
+  <title>МАГиГ | Экспресс-диагностика практики психолога</title>
 
-  <!--
-    🔒 Content Security Policy — разрешаем скрипты только с известных CDN.
-    При добавлении нового CDN — добавь его домен в script-src.
-    При подключении Notibot Bridge добавь: notibot.ru
-  -->
   <meta http-equiv="Content-Security-Policy"
         content="
           default-src 'self';
@@ -40,13 +35,10 @@
   <!-- Стили проекта -->
   <link rel="stylesheet" href="./css/styles.css" />
 
-  <!--
-    💡 Notibot Bridge подключается здесь если нужна интеграция с Notibot.
-    Используй скилл "Notibot Bridge" — агент добавит строку ниже:
-    <script src="./js/notibot-bridge.js"></script>
-  -->
+  <!-- Notibot Bridge -->
+  <script src="./js/notibot-bridge.js"></script>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
 
   <!-- Корневой элемент приложения -->
   <div id="app"></div>
