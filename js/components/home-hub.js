@@ -11,7 +11,7 @@ export function renderHomeHub(container, { onSelectGame, onSelectQuiz }) {
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900/90 text-indigo-300 border border-indigo-500/40 shadow-lg shadow-indigo-500/10 mb-4 backdrop-blur-md">
             <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
-            <span>МАГиГ • ЛАБОРАТОРИЯ ГИПНОЗА</span>
+            <span>МАГиГ • АКАДЕМИЯ ГИПНОЗА</span>
           </div>
 
           <!-- Заголовок с неоновым градиентом -->
@@ -22,7 +22,7 @@ export function renderHomeHub(container, { onSelectGame, onSelectQuiz }) {
           </h1>
 
           <p class="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed mb-4">
-            Интерактивная среда для психологов: симуляция сессий и диагностика бессознательного
+            Московская Академия Гипноза и Гипнотерапии: симуляция сессий и диагностика практики
           </p>
 
           <!-- Фишки-чипсы -->
@@ -88,7 +88,7 @@ export function renderHomeHub(container, { onSelectGame, onSelectQuiz }) {
       <!-- Футер -->
       <div class="pb-6 text-center">
         <a href="https://magig.ru" target="_blank" class="text-xs text-slate-400 hover:text-indigo-300 transition-colors flex items-center justify-center gap-1">
-          <i data-lucide="globe" class="w-3.5 h-3.5 text-indigo-400"></i> Международная Академия МАГиГ (magig.ru)
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-indigo-400"></i> Московская Академия Гипноза и Гипнотерапии (magig.ru)
         </a>
       </div>
     </div>
