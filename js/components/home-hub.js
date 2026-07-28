@@ -87,8 +87,8 @@ export function renderHomeHub(container, { onSelectGame, onSelectQuiz }) {
 
       <!-- Футер -->
       <div class="pb-6 text-center">
-        <a href="https://magig.ru" target="_blank" class="text-xs text-slate-400 hover:text-indigo-300 transition-colors flex items-center justify-center gap-1">
-          <i data-lucide="globe" class="w-3.5 h-3.5 text-indigo-400"></i> Московская Академия Гипноза и Гипнотерапии (magig.ru)
+        <a href="https://hypnoacademy.ru" target="_blank" class="text-xs text-slate-400 hover:text-indigo-300 transition-colors flex items-center justify-center gap-1">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-indigo-400"></i> Московская Академия Гипноза и Гипнотерапии (hypnoacademy.ru)
         </a>
       </div>
     </div>

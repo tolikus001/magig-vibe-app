@@ -104,8 +104,8 @@ function renderResultScreen(container) {
   `;
   document.getElementById('cta-game-btn').onclick = () => {
     triggerHaptic();
-    if (window.NotibotBridge && window.NotibotBridge.navigation) { window.NotibotBridge.navigation.openUrl('https://magig.ru'); }
-    else { window.open('https://magig.ru', '_blank'); }
+    if (window.NotibotBridge && window.NotibotBridge.navigation) { window.NotibotBridge.navigation.openUrl('https://hypnoacademy.ru'); }
+    else { window.open('https://hypnoacademy.ru', '_blank'); }
   };
   document.getElementById('restart-game-btn').onclick = () => { triggerHaptic(); initGame('app'); };
 }

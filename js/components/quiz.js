@@ -100,9 +100,9 @@ function renderResult(container) {
   document.getElementById('cta-btn').onclick = () => {
     triggerHaptic();
     if (window.NotibotBridge && window.NotibotBridge.navigation) {
-      window.NotibotBridge.navigation.openUrl('https://magig.ru');
+      window.NotibotBridge.navigation.openUrl('https://hypnoacademy.ru');
     } else {
-      window.open('https://magig.ru', '_blank');
+      window.open('https://hypnoacademy.ru', '_blank');
     }
   };
 
