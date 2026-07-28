@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Симулятор Терапевта | Лабиринт Бессознательного (МАГиГ)</title>
+
+  <!-- Google Fonts & Tailwind & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      --color-bg: #020617;
+      --color-text: #f8fafc;
+      --color-accent: #6366f1;
+      --color-surface: rgba(15, 23, 42, 0.75);
+      --color-border: rgba(99, 102, 241, 0.25);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+      background-color: var(--color-bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.18) 0px, transparent 50%);
+      color: var(--color-text); -webkit-font-smoothing: antialiased; min-height: 100vh;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.3s ease forwards; }
+    .slide-up { animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .btn-press { transition: all 0.15s ease; cursor: pointer; }
+    .btn-press:active { transform: scale(0.97); opacity: 0.85; }
+    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 18px; }
+    .btn-primary {
+      display: block; width: 100%; padding: 14px 24px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff; font-size: 16px; font-weight: 600; border: none; border-radius: 14px;
+      cursor: pointer; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); transition: all 0.15s ease;
+    }
+    .btn-primary:active { transform: scale(0.97); box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.3); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
+  <div id="app"></div>
+
+  <script>
+    const GAME_CONFIG = {
+      title: "Симулятор Сессий: Лабиринт Бессознательного",
+      subtitle: "Проведите 5 сложных клиентов через сопротивление к инсайтам",
+      courseTitle: "Курс «Эриксоновский гипноз и работа с бессознательным» в МАГиГ"
+    };
+
+    const GAME_CASES = [
+      {
+        id: 1, clientName: "Алексей, 34 года (Рационализатор)", avatar: "user-check",
+        quote: "«Я всё прочитал по психологии. Я знаю, почему у меня тревога. Но почему она не проходит?»",
+        choices: [
+          { text: "Объяснить ему устройство нервной системы и дать логический совет", hpDelta: -25, trustDelta: -10, feedback: "Алексей начал спорить и доказывать эрудицию. Вы потратили силы на споры." },
+          { text: "Использовать Эриксоновскую метафору про «ум как компьютер в цикле»", hpDelta: 15, trustDelta: 25, feedback: "Алексей замолчал и задумался. Сопротивление снизилось!" },
+          { text: "Спросить: «А вы пробовали просто не думать о тревоге?»", hpDelta: -30, trustDelta: -20, feedback: "Клиент разочарован. Энергия сессии падает." }
+        ]
+      },
+      {
+        id: 2, clientName: "Елена, 28 лет (Психосоматика)", avatar: "activity",
+        quote: "«При мысли о выступлениях у меня ком в горле и нечем дышать»",
+        choices: [
+          { text: "Предложить описать форму и ощущение от «кома» в трансовом фокусе", hpDelta: 15, trustDelta: 25, feedback: "Елена расслабила плечи. Метафора позволила быстро трансформировать симптом!" },
+          { text: "Убеждать её, что выступления — это вовсе не страшно", hpDelta: -20, trustDelta: -10, feedback: "Логические убеждения не работают против телесных зажимов." },
+          { text: "Начать раскопки детских травм с прямого допроса", hpDelta: -15, trustDelta: -5, feedback: "Включилась сильная защита. Зажим усилился." }
+        ]
+      },
+      {
+        id: 3, clientName: "Михаил, 42 года (Человек в броне)", avatar: "shield-alert",
+        quote: "«У меня всё хорошо, жена притащила. Не верю я в психологию»",
+        choices: [
+          { text: "Утилизировать сопротивление: «Вы правы, не верьте. Просто наблюдайте за ощущениями»", hpDelta: 20, trustDelta: 30, feedback: "Классический эриксоновский обход! Защита снята, клиент заинтересовался." },
+          { text: "Доказывать ему пользу вашей методологии", hpDelta: -25, trustDelta: -15, feedback: "Михаил скрестил руки. Сопротивление выросло." },
+          { text: "Сдаться и завершить сессию", hpDelta: -10, trustDelta: 0, feedback: "Шанс на контакт упущен." }
+        ]
+      },
+      {
+        id: 4, clientName: "Ольга, 35 лет (Фоновый страх)", avatar: "heart-pulse",
+        quote: "«Я постоянно жду подвоха. Не могу расслабиться даже во сне»",
+        choices: [
+          { text: "Применить мягкое трансовое наведение через фокус на дыхании", hpDelta: 15, trustDelta: 25, feedback: "Ольга впервые за долгое время глубоко вздохнула." },
+          { text: "Дать ей домашнее задание из 10 пунктов для контроля", hpDelta: -15, trustDelta: -10, feedback: "Ещё больше контроля только усилило тревогу." },
+          { text: "Попросить её взять себя в руки", hpDelta: -30, trustDelta: -25, feedback: "Клиентка замыкается." }
+        ]
+      },
+      {
+        id: 5, clientName: "Ирина, 31 год (Выгорание и поиск ресурсов)", avatar: "sparkles",
+        quote: "«Я выгорела. Где взять энергию и силы?»",
+        choices: [
+          { text: "Погрузить её в ресурсное трансовое воспоминание успеха и опоры", hpDelta: 20, trustDelta: 30, feedback: "Бессознательное открыло доступ к скрытым ресурсам!" },
+          { text: "Посоветовать поспать и съездить в отпуск", hpDelta: -10, trustDelta: -5, feedback: "Банальный совет не решает конфликт." },
+          { text: "Начать копаться в причинах выгорания", hpDelta: -15, trustDelta: 0, feedback: "Сил у клиентки стало ещё меньше." }
+        ]
+      }
+    ];
+
+    let state = { currentCase: 0, hp: 100, trust: 50, inFeedback: false, lastFeedback: null };
+
+    function getRank(hp, trust) {
+      const score = hp + trust;
+      if (score >= 180) return { title: "Гроссмейстер Эриксоновского Гипноза", badge: "Трансовая виртуозность", desc: "Вы с легкостью обходите сопротивление и находите ключи к бессознательному. Ваши сессии экономят силы и дают результат." };
+      if (score >= 120) return { title: "Опытный Практик-Исследователь", badge: "Хороший потенциал", desc: "Вы чувствуете клиента, но для сложных случаев вам не хватает точных протоколов Милтон-модели." };
+      return { title: "Классический Теоретик", badge: "Выгорание на сессиях", desc: "Вы тратите много сил на споры и пробивание «защиты». Пора освоить мягкие трансовые методы." };
+    }
+
+    function render() {
+      const container = document.getElementById('app');
+      if (state.inFeedback) renderFeedback(container);
+      else if (state.currentCase < GAME_CASES.length) renderCase(container);
+      else renderResult(container);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderCase(container) {
+      const c = GAME_CASES[state.currentCase];
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 fade-in">
+          <div>
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 mb-4 space-y-2">
+              <div class="flex items-center justify-between text-xs font-semibold">
+                <span class="text-slate-400">Кейс ${state.currentCase + 1} из 5</span>
+                <span class="text-purple-400">Доверие: ${state.trust}%</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <div class="flex justify-between text-[10px] text-slate-400 mb-1"><span>Энергия</span><span>${state.hp} HP</span></div>
+                  <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden"><div class="bg-emerald-500 h-2 transition-all duration-300" style="width:${state.hp}%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] text-slate-400 mb-1"><span>Доверие</span><span>${state.trust}%</span></div>
+                  <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden"><div class="bg-purple-500 h-2 transition-all duration-300" style="width:${state.trust}%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card bg-slate-900/80 border-indigo-500/30 mb-4 p-4">
+              <div class="flex items-center gap-2 mb-2"><i data-lucide="${c.avatar}" class="w-4 h-4 text-indigo-400"></i><span class="text-xs font-bold">${c.clientName}</span></div>
+              <p class="text-sm font-medium text-amber-200/90 italic bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">${c.quote}</p>
+            </div>
+            <div class="space-y-2.5">
+              ${c.choices.map((ch, i) => `
+                <button data-index="${i}" class="choice-btn w-full p-3.5 text-left rounded-xl bg-slate-900/60 border border-slate-800 hover:border-indigo-500/50 text-xs text-slate-200 btn-press">${ch.text}</button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      container.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.onclick = () => {
+          const ch = c.choices[parseInt(btn.dataset.index)];
+          state.hp = Math.max(0, Math.min(100, state.hp + ch.hpDelta));
+          state.trust = Math.max(0, Math.min(100, state.trust + ch.trustDelta));
+          state.lastFeedback = ch;
+          state.inFeedback = true;
+          render();
+        };
+      });
+    }
+
+    function renderFeedback(container) {
+      const f = state.lastFeedback;
+      const isPos = f.hpDelta > 0 || f.trustDelta > 0;
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 fade-in">
+          <div class="pt-8 text-center">
+            <h3 class="text-lg font-bold text-slate-100 mb-2">${isPos ? 'Отличный трансовый подход!' : 'Сопротивление возросло!'}</h3>
+            <div class="card bg-slate-900/80 border-slate-800 p-4 mb-6 text-sm text-slate-300 text-left">${f.feedback}</div>
+            <div class="flex justify-center gap-4 text-xs font-semibold">
+              <span class="${f.hpDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'}">Энергия: ${f.hpDelta > 0 ? '+' : ''}${f.hpDelta} HP</span>
+              <span class="${f.trustDelta >= 0 ? 'text-purple-400' : 'text-rose-400'}">Доверие: ${f.trustDelta > 0 ? '+' : ''}${f.trustDelta}%</span>
+            </div>
+          </div>
+          <div class="pb-6"><button id="next-btn" class="btn-primary w-full py-4">Следующий случай</button></div>
+        </div>
+      `;
+      document.getElementById('next-btn').onclick = () => { state.inFeedback = false; state.currentCase++; render(); };
+    }
+
+    function renderResult(container) {
+      const rank = getRank(state.hp, state.trust);
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 slide-up">
+          <div class="pt-6 text-center">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20 mb-3">${rank.badge}</span>
+            <h2 class="text-2xl font-bold text-slate-100 mb-1">${rank.title}</h2>
+            <div class="card bg-slate-900/80 border-indigo-500/30 p-4 my-4 text-sm text-slate-300 text-left">${rank.desc}</div>
+          </div>
+          <div class="pb-6 space-y-3">
+            <button onclick="window.open('https://magig.ru', '_blank')" class="btn-primary w-full py-4">Записаться на курс в МАГиГ</button>
+            <button onclick="state={currentCase:0,hp:100,trust:50,inFeedback:false,lastFeedback:null};render();" class="w-full py-3 text-xs text-slate-400 text-center">Сыграть заново</button>
+          </div>
+        </div>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>

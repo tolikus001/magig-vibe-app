@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>МАГиГ | Экспресс-диагностика практики психолога</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      --color-bg: #020617;
+      --color-text: #f8fafc;
+      --color-accent: #6366f1;
+      --color-surface: rgba(15, 23, 42, 0.75);
+      --color-border: rgba(99, 102, 241, 0.25);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--color-bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.18) 0px, transparent 50%);
+      color: var(--color-text);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
+    }
+
+    .fade-in   { animation: fadeIn 0.3s ease forwards; }
+    .slide-up  { animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .pulse     { animation: pulse 2s ease infinite; }
+
+    .btn-press {
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .btn-press:active {
+      transform: scale(0.97);
+      opacity: 0.85;
+    }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
+
+  <div id="app"></div>
+
+  <script>
+    // --- Конфигурация Воронки ---
+    const QUIZ_CONFIG = {
+      title: "Диагностика практики психолога",
+      subtitle: "Откройте доступ к 90% бессознательных ресурсов ваших клиентов",
+      academy: "МАГиГ",
+      courseTitle: "Курс «Эриксоновский гипноз и работа с бессознательным»"
+    };
+
+    const QUIZ_QUESTIONS = [
+      {
+        id: 1,
+        title: "1. Как часто клиенты говорят вам: «Я всё понимаю головой, но эмоции и реакции живут своей жизнью»?",
+        options: [
+          { text: "Постоянно: долгий логический анализ не меняет фоновые страхи", trait: "indirect" },
+          { text: "Регулярно: клиент застревает в проработках и стоит на месте", trait: "trance" },
+          { text: "Часто: телесные зажимы и тревога не уходят от простых разговоров", trait: "somatic" },
+          { text: "Иногда: ищу более быстрый способ менять автоматические реакции", trait: "resource" }
+        ]
+      },
+      {
+        id: 2,
+        title: "2. Как вы считаете, где хранится 90% автоматических страхов, привычек и реакций человека?",
+        options: [
+          { text: "В бессознательном — там формируются все автоматизмы психики", trait: "indirect" },
+          { text: "В глубокой эмоциональной памяти и детских сценариях", trait: "resource" },
+          { text: "В телесном опыте и заблокированных физических реакциях", trait: "somatic" },
+          { text: "В защитных механизмах, которые не пускают изменения на сознательном уровне", trait: "trance" }
+        ]
+      },
+      {
+        id: 3,
+        title: "3. Почему обычной беседной терапии бывает трудно быстро изменить глубинные установки?",
+        options: [
+          { text: "Сознание включает «критический фильтр», спорит и защищает старый опыт", trait: "indirect" },
+          { text: "Логические аргументы и советы не доходят до уровня эмоций и тела", trait: "somatic" },
+          { text: "Клиент рационализирует и пытается всё контролировать во время сессии", trait: "trance" },
+          { text: "Обычный диалог задействует лишь верхушку айсберга (сознание)", trait: "resource" }
+        ]
+      },
+      {
+        id: 4,
+        title: "4. Знаете ли вы, что естественный транс (фокус внимания) — это мягкий мост напрямую к бессознательному?",
+        options: [
+          { text: "Слышал(а), но думал(а), что гипноз — это директивный сон и маятники", trait: "indirect" },
+          { text: "Да, но не знаю, как применять это системно и дозировано в терапии", trait: "trance" },
+          { text: "Интересно: как помогать клиенту погружаться без давления и гипносна?", trait: "resource" },
+          { text: "Хочу научиться вводить в транс мягко прямо в процессе обычного разговора", trait: "somatic" }
+        ]
+      },
+      {
+        id: 5,
+        title: "5. Эриксоновский гипноз — это работа с метафорами и ресурсами без директивы. Насколько это вам откликается?",
+        options: [
+          { text: "Откликается на 100%: мне важна мягкость, экологичность и уважение к клиенту", trait: "resource" },
+          { text: "Очень интересно: обходить сопротивление через терапевтические истории", trait: "indirect" },
+          { text: "Это именно тот метод, которого мне не хватало для быстрых результатов", trait: "trance" },
+          { text: "Хочу научиться сочетать работу с телом, эмоциями и трансом", trait: "somatic" }
+        ]
+      },
+      {
+        id: 6,
+        title: "6. Если вы научитесь за 10-15 минут помогать клиенту находить решения в бессознательном, как изменится ваша практика?",
+        options: [
+          { text: "Моя результативность вырастет, а время терапии сократится в разы", trait: "trance" },
+          { text: "Появится уверенность в работе с самыми «сложными» и рационализирующими клиентами", trait: "indirect" },
+          { text: "Клиенты будут получать глубинную трансформацию без боли и мучительных допросов", trait: "resource" },
+          { text: "Готов(а) освоить этот метод на профессиональной программе в МАГиГ", trait: "somatic" }
+        ]
+      }
+    ];
+
+    const RESULT_PROFILES = {
+      indirect: {
+        title: "Профиль: Обход Сопротивления и Разговорный Гипноз",
+        tag: "Высокая готовность к Эриксоновскому подходу",
+        desc: "Вы видите, как сознательный контроль и рационализация мешают клиентам меняться. Эриксоновский гипноз покажет вам, как мягко обходить «критический фактор» через метафоры и косвенные внушения прямо в диалоге.",
+        recommendation: "На программе в МАГиГ вы освоите паттерны разговора без директивы, позволяющие работать с клиентами любого уровня сопротивления."
+      },
+      trance: {
+        title: "Профиль: Быстрые Изменения и Краткосрочная Терапия",
+        tag: "Фокус на результативность сессий",
+        desc: "Вам важна скорость и глубина результатов. Работа с бессознательным через естественный транс сокращает время терапии в 2-3 раза за счет прямого контакта с источником проблемы.",
+        recommendation: "В МАГиГ вы получите чёткие пошаговые алгоритмы наведения трансовых состояний и калибровки реакций клиента."
+      },
+      resource: {
+        title: "Профиль: Экологичная и Ресурсная Психотерапия",
+        tag: "Приоритет — безопасность и глубина",
+        desc: "Вы цените бережное отношение к психике клиента. Эриксонианский подход основан на вере в то, что у бессознательного клиента уже есть ВСЕ нужные ресурсы.",
+        recommendation: "Курс в МАГиГ научит вас находить и активировать эти ресурсы без боли, давления и гипнотического манипулирования."
+      },
+      somatic: {
+        title: "Профиль: Комплексная Интеграция (Тело + Эмоции + Бессознательное)",
+        tag: "Готовность к целостной практике",
+        desc: "Вы понимаете, что телесные симптомы и глубокие эмоции невозможно изменить лишь логикой. Транс объединяет тело и разум в единый терапевтический процесс.",
+        recommendation: "Программа МАГиГ даст вам универсальный инструмент для работы с психосоматикой, зажимами и повторяющимися сценариями."
+      }
+    };
+
+    let state = { step: 0, answers: [] };
+
+    function getQuizResult(answers) {
+      const counts = { indirect: 0, trance: 0, resource: 0, somatic: 0 };
+      answers.forEach(trait => { if (counts[trait] !== undefined) counts[trait]++; });
+      let maxTrait = 'indirect', maxCount = -1;
+      Object.keys(counts).forEach(trait => {
+        if (counts[trait] > maxCount) { maxCount = counts[trait]; maxTrait = trait; }
+      });
+      return RESULT_PROFILES[maxTrait] || RESULT_PROFILES.indirect;
+    }
+
+    function render() {
+      const container = document.getElementById('app');
+      if (state.step === 0) renderStart(container);
+      else if (state.step > 0 && state.step <= QUIZ_QUESTIONS.length) renderQuestion(container);
+      else if (state.step === QUIZ_QUESTIONS.length + 1) renderLoading(container);
+      else renderResult(container);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderStart(container) {
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 slide-up">
+          <div class="text-center pt-8">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> ${QUIZ_CONFIG.academy} • Экспресс-диагностика
+            </span>
+            <h1 class="text-2xl font-bold text-slate-100 mb-3 leading-tight">${QUIZ_CONFIG.title}</h1>
+            <p class="text-sm text-slate-400 mb-6 leading-relaxed">${QUIZ_CONFIG.subtitle}</p>
+            
+            <div class="card text-left mb-6 space-y-3 border-indigo-500/20 bg-slate-900/60 backdrop-blur-md">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600/20 flex items-center justify-center text-indigo-400 shrink-0 mt-0.5">
+                  <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-slate-200">6 вопросов практики</div>
+                  <div class="text-xs text-slate-400">Определите свой профиль работы с бессознательным</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-slate-200">Персональная рекомендация</div>
+                  <div class="text-xs text-slate-400">Подбор модулей курса эриксоновского гипноза в МАГиГ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pb-6">
+            <button id="start-btn" class="btn-primary w-full py-4 rounded-xl text-base font-semibold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2">
+              Начать диагностику <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      document.getElementById('start-btn').onclick = () => { state.step = 1; render(); };
+    }
+
+    function renderQuestion(container) {
+      const q = QUIZ_QUESTIONS[state.step - 1];
+      const progressPct = Math.round((state.step / QUIZ_QUESTIONS.length) * 100);
+
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 fade-in">
+          <div>
+            <div class="flex items-center justify-between py-3 mb-4">
+              <button id="back-btn" class="text-xs text-slate-400 flex items-center gap-1 hover:text-slate-200 transition-colors">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Назад
+              </button>
+              <span class="text-xs font-medium text-indigo-400">Вопрос ${state.step} из ${QUIZ_QUESTIONS.length}</span>
+            </div>
+
+            <div class="w-full bg-slate-800 rounded-full h-1.5 mb-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPct}%"></div>
+            </div>
+
+            <h2 class="text-lg font-semibold text-slate-100 mb-6 leading-snug">${q.title}</h2>
+
+            <div class="space-y-3">
+              ${q.options.map((opt, i) => `
+                <button data-index="${i}" class="option-btn w-full p-4 text-left rounded-xl bg-slate-900/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/60 transition-all flex items-start gap-3 group btn-press">
+                  <span class="w-6 h-6 rounded-full border border-slate-700 group-hover:border-indigo-400 flex items-center justify-center text-xs font-medium text-slate-400 group-hover:text-indigo-400 shrink-0 mt-0.5">${i + 1}</span>
+                  <span class="text-sm text-slate-200 leading-normal">${opt.text}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('back-btn').onclick = () => {
+        state.step--;
+        if (state.answers.length >= state.step) state.answers.pop();
+        render();
+      };
+
+      container.querySelectorAll('.option-btn').forEach(btn => {
+        btn.onclick = () => {
+          const idx = parseInt(btn.dataset.index);
+          state.answers.push(q.options[idx].trait);
+          state.step++;
+          render();
+        };
+      });
+    }
+
+    function renderLoading(container) {
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col items-center justify-center p-6 text-center fade-in">
+          <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+            <i data-lucide="sparkles" class="w-8 h-8 text-indigo-400 pulse"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-100 mb-2">Анализ профиля практики...</h3>
+          <p class="text-xs text-slate-400 max-w-xs">Формируем индивидуальную траекторию обучения в МАГиГ</p>
+        </div>
+      `;
+      setTimeout(() => { state.step++; render(); }, 1200);
+    }
+
+    function renderResult(container) {
+      const result = getQuizResult(state.answers);
+      container.innerHTML = `
+        <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between p-5 slide-up">
+          <div class="pt-4">
+            <div class="text-center mb-6">
+              <span class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/20 mb-3">
+                ${result.tag}
+              </span>
+              <h2 class="text-2xl font-bold text-slate-100 mb-1">${result.title}</h2>
+              <p class="text-xs text-slate-400">Ваш результат диагностики практики</p>
+            </div>
+
+            <div class="card bg-slate-900/80 border-indigo-500/30 p-5 mb-4 space-y-4">
+              <div>
+                <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-1">Особенности вашей работы</div>
+                <p class="text-sm text-slate-300 leading-relaxed">${result.desc}</p>
+              </div>
+              <div class="border-t border-slate-800 pt-3">
+                <div class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Рекомендация по обучению в МАГиГ</div>
+                <p class="text-sm text-slate-300 leading-relaxed">${result.recommendation}</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 mb-6">
+              <div class="flex items-center gap-3">
+                <i data-lucide="graduation-cap" class="w-6 h-6 text-indigo-400 shrink-0"></i>
+                <div>
+                  <div class="text-xs font-bold text-slate-100">${QUIZ_CONFIG.courseTitle}</div>
+                  <div class="text-xs text-slate-300">Старт нового потока • Очно & Онлайн в МАГиГ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pb-6 space-y-3">
+            <button id="cta-btn" class="btn-primary w-full py-4 rounded-xl text-base font-semibold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2">
+              Записаться на курс в МАГиГ <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </button>
+            <button id="restart-btn" class="w-full py-3 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors text-center">
+              Пройти тест заново
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('cta-btn').onclick = () => {
+        window.open('https://magig.ru', '_blank');
+      };
+
+      document.getElementById('restart-btn').onclick = () => {
+        state = { step: 0, answers: [] };
+        render();
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>
