@@ -1,9 +1,10 @@
-// js/app.js - Точка входа приложения
-// Задействованные подмодули квиза: quiz-data.js, quiz-steps.js
-import { initQuiz } from './components/quiz.js';
+// js/app.js - Точка входа симулятора
+// Модули игры: game-data.js, game-render.js, game.js
+// Дополнительные модули: quiz-data.js, quiz-steps.js, quiz.js
+import { initGame } from './components/game.js';
 import { initIcons } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initQuiz('app');
+  initGame('app');
   initIcons();
 });
