@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>И Цзин • Прогноз Дня & Оракул | МАГиГ (hypnoacademy.ru)</title>
+
+  <!-- Google Fonts & Tailwind & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Стили проекта -->
+  <link rel="stylesheet" href="./css/styles.css" />
+  <script src="./js/notibot-bridge.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
+  <div id="app"></div>
+
+  <script type="module">
+    import { initIching } from './js/components/iching.js';
+    import { initIcons } from './js/utils.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initIching('app');
+
+      // Кнопка перехода на главную
+      const container = document.getElementById('app');
+      const navHeader = document.createElement('div');
+      navHeader.className = 'max-w-md mx-auto px-5 pt-3 flex justify-between items-center text-xs';
+      navHeader.innerHTML = `
+        <a href="./index.html" class="text-slate-400 hover:text-amber-300 flex items-center gap-1 py-1 transition-colors font-medium">
+          <i data-lucide="home" class="w-4 h-4"></i> Главное меню
+        </a>
+        <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">МАГиГ</span>
+      `;
+      container.prepend(navHeader);
+      initIcons();
+    });
+  </script>
+</body>
+</html>
