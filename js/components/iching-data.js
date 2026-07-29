@@ -43,6 +43,23 @@ export function getDailyForecast(dateObj = new Date()) {
   };
 }
 
+export function getForecastFromLines(lines, dateObj = new Date()) {
+  const symbol = lines.map(l => (l === 7 || l === 9) ? "1" : "0");
+  let hexagram = HEXAGRAMS_DB.find(h => h.symbol.join('') === symbol.join(''));
+
+  if (!hexagram) {
+    const sum = lines.reduce((acc, v) => acc + v, 0);
+    hexagram = HEXAGRAMS_DB[sum % HEXAGRAMS_DB.length];
+  }
+
+  return {
+    dateStr: getDeterministicSeed(dateObj).dateStr,
+    formattedDate: formatDateRu(dateObj),
+    hexagram,
+    lines
+  };
+}
+
 export function formatDateRu(dateObj) {
   return new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric', month: 'long', year: 'numeric', weekday: 'long'

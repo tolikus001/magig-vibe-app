@@ -1,5 +1,5 @@
 // js/components/iching.js - Управление состоянием Оракула И Цзин
-import { getDailyForecast } from './iching-data.js';
+import { getDailyForecast, getForecastFromLines } from './iching-data.js';
 import { renderOverviewScreen } from './iching-render-overview.js';
 import { renderRitualScreen } from './iching-render-ritual.js';
 import { renderForecastResultScreen } from './iching-render-result.js';
@@ -61,6 +61,7 @@ function render(container) {
       },
       onQuickForecast: () => {
         triggerHaptic('medium');
+        state.forecastData = getDailyForecast(state.selectedDate);
         state.lines = [...state.forecastData.lines];
         state.mode = 'result';
         render(container);
@@ -74,20 +75,19 @@ function render(container) {
         state.coinsFlipping = true;
         render(container);
         setTimeout(() => {
-          const targetLine = state.forecastData.lines[state.currentLineIndex];
-          let coinValues = [3, 3, 3];
-          if (targetLine === 6) coinValues = [2, 2, 2];
-          else if (targetLine === 7) coinValues = [3, 2, 2];
-          else if (targetLine === 8) coinValues = [3, 3, 2];
-          else if (targetLine === 9) coinValues = [3, 3, 3];
+          const c1 = Math.random() < 0.5 ? 3 : 2;
+          const c2 = Math.random() < 0.5 ? 3 : 2;
+          const c3 = Math.random() < 0.5 ? 3 : 2;
+          const lineVal = c1 + c2 + c3;
 
-          state.lastCoins = coinValues;
-          state.lines.push(targetLine);
+          state.lastCoins = [c1, c2, c3];
+          state.lines.push(lineVal);
           state.currentLineIndex++;
           state.coinsFlipping = false;
           triggerHaptic('heavy');
 
           if (state.currentLineIndex >= 6) {
+            state.forecastData = getForecastFromLines(state.lines, state.selectedDate);
             setTimeout(() => { state.mode = 'result'; render(container); }, 500);
           } else {
             render(container);
