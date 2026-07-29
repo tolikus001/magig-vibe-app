@@ -20,7 +20,7 @@ function renderApp() {
       onSelectQuiz: () => { currentMode = 'quiz'; renderApp(); }
     });
   } else if (currentMode === 'iching') {
-    initIching('app');
+    initIching('app', { onGoHome: () => { currentMode = 'home'; renderApp(); } });
     addHomeButton(container);
   } else if (currentMode === 'game') {
     initGame('app');

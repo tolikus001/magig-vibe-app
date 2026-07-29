@@ -18,7 +18,6 @@ export function renderForecastResultScreen(container, state, handlers) {
           </button>
         </div>
 
-        <!-- Подсказка: Как понимать результат -->
         <div class="bg-amber-950/30 border border-amber-500/30 rounded-xl p-3 mb-4 text-[11px] text-slate-300 space-y-1">
           <div class="font-bold text-amber-300 flex items-center gap-1.5 mb-1">
             <i data-lucide="compass" class="w-3.5 h-3.5 text-amber-400"></i> Как понимать этот результат?
@@ -97,8 +96,13 @@ export function renderForecastResultScreen(container, state, handlers) {
         </div>
       </div>
 
-      <div class="pb-5 space-y-3">
+      <div class="pb-5 space-y-2.5">
         <button id="btn-share" class="btn-primary w-full py-3 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"><i data-lucide="share-2" class="w-4 h-4"></i> Поделиться прогнозом</button>
+        
+        <button id="btn-go-home-main" class="w-full py-3 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 btn-press text-center flex items-center justify-center gap-2 shadow-md">
+          <i data-lucide="home" class="w-4 h-4 text-amber-400"></i> Вернуться в Главное Меню
+        </button>
+
         <div class="grid grid-cols-2 gap-2">
           <button id="btn-repeat-ritual" class="py-2.5 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-slate-300 btn-press text-center flex items-center justify-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-amber-400"></i> Бросить снова</button>
           <button id="btn-academy-link" class="py-2.5 text-xs font-semibold rounded-xl bg-purple-950/40 border border-purple-500/30 hover:bg-purple-900/40 text-purple-300 btn-press text-center flex items-center justify-center gap-1"><i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i> Курс в МАГиГ</button>
@@ -109,6 +113,7 @@ export function renderForecastResultScreen(container, state, handlers) {
 
   document.getElementById('btn-change-date').onclick = handlers.onChangeDate;
   document.getElementById('btn-share').onclick = handlers.onShare;
+  document.getElementById('btn-go-home-main').onclick = handlers.onGoHomeMain;
   document.getElementById('btn-repeat-ritual').onclick = handlers.onRepeatRitual;
   document.getElementById('btn-academy-link').onclick = handlers.onAcademyLink;
 }

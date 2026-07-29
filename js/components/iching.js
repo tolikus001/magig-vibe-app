@@ -11,7 +11,8 @@ let state = {
   lines: [],
   coinsFlipping: false,
   lastCoins: [3, 3, 3],
-  forecastData: null
+  forecastData: null,
+  onGoHome: null
 };
 
 function triggerHaptic(type = 'light') {
@@ -20,7 +21,7 @@ function triggerHaptic(type = 'light') {
   }
 }
 
-export function initIching(containerId = 'app') {
+export function initIching(containerId = 'app', options = {}) {
   const container = document.getElementById(containerId);
   if (!container) return;
   state = {
@@ -30,7 +31,8 @@ export function initIching(containerId = 'app') {
     lines: [],
     coinsFlipping: false,
     lastCoins: [3, 3, 3],
-    forecastData: getDailyForecast(new Date())
+    forecastData: getDailyForecast(new Date()),
+    onGoHome: options.onGoHome || null
   };
   render(container);
 }
@@ -104,6 +106,14 @@ function render(container) {
         const text = `☯️ Прогноз И Цзин на ${f.formattedDate}:\n${f.hexagram.nameRu}\n«${f.hexagram.dailyOverview}»\nhypnoacademy.ru`;
         if (navigator.share) navigator.share({ title: 'Прогноз И Цзин', text }).catch(() => {});
         else { navigator.clipboard.writeText(text); alert('Скопировано в буфер!'); }
+      },
+      onGoHomeMain: () => {
+        triggerHaptic();
+        if (state.onGoHome) {
+          state.onGoHome();
+        } else {
+          window.location.href = './index.html';
+        }
       },
       onRepeatRitual: () => {
         triggerHaptic();
